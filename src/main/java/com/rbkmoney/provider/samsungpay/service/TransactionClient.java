@@ -97,7 +97,7 @@ public class TransactionClient {
     }
 
     private Request preparePostRequest(URL url, String body) {
-        RequestBody requestBody = RequestBody.create(MediaType.parse("Content-type: application/json;charset=utf-8"), body);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=utf-8"), body);
         return new Request.Builder().url(url).method("POST", requestBody).build();
     }
 

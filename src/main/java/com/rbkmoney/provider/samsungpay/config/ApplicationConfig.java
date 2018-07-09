@@ -6,8 +6,11 @@ import com.rbkmoney.provider.samsungpay.service.TransactionClient;
 import com.rbkmoney.provider.samsungpay.service.TransactionService;
 import com.rbkmoney.provider.samsungpay.store.SPKeyStore;
 import com.rbkmoney.woody.api.flow.WFlow;
+import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -49,6 +52,15 @@ public class ApplicationConfig {
         return new ProviderHandler();
     }
 
+
+    @Bean
+    public ServletWebServerFactory servletContainer(@Value("${server.rest_port}") int httpPort) {
+        TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+        Connector connector = new Connector();
+        connector.setPort(httpPort);
+        tomcat.addAdditionalTomcatConnectors(connector);
+        return tomcat;
+    }
 
     @Bean
     public FilterRegistrationBean externalPortRestrictingFilter(@Value("${server.rest_port}") int restPort, @Value("/${server.rest_path_prefix}/") String httpPathPrefix) {

@@ -9,20 +9,22 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ResultStatus {
-    public int code;
-    public String decription;
+    public String code;
+    public String description;
 
     @JsonCreator
     public ResultStatus(
-            @JsonProperty(value = "resultCode", required = true) int code,
-            @JsonProperty(value = "resultMessage", required = true) String decription) {
+            @JsonProperty(value = "resultCode", required = true) String code,
+            @JsonProperty(value = "resultMessage", required = true) String description) {
+        this.code = code;
+        this.description = description;
     }
 
     @Override
     public String toString() {
         return "ResultStatus{" +
-                "code=" + code +
-                ", decription='" + decription + '\'' +
+                "code='" + code + '\'' +
+                ", description='" + description + '\'' +
                 '}';
     }
 }

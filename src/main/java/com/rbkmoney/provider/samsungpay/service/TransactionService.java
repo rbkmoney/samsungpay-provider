@@ -29,8 +29,8 @@ public class TransactionService {
         try {
             String respBody = transactionClient.requestTransaction(reqBody);
             ResultStatus status = mapper.readValue(respBody, ResultStatus.class);
-            if (status.code != 0) {
-                log.warn("Unsuccessful SP response code:"+status, respBody);
+            if (!"0".equals(status.code)) {
+                log.warn("Unsuccessful SP response code:{}",status);
             }
             return respBody;
         } catch (IOException e) {
@@ -47,7 +47,7 @@ public class TransactionService {
             }
             String respBody = transactionClient.requestCredentials(serviceId, refId);
             ResultStatus status = mapper.readValue(respBody, ResultStatus.class);
-            if (status.code != 0) {
+            if (!"0".equals(status.code)) {
                 log.error("Unsuccessful SP response code:"+status, respBody);
                 throw new SPException("Unsuccessful SP response code", respBody);
             }

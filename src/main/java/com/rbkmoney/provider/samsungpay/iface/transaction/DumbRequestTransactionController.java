@@ -1,4 +1,4 @@
-package com.rbkmoney.provider.samsungpay.iface.session;
+package com.rbkmoney.provider.samsungpay.iface.transaction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rbkmoney.provider.samsungpay.service.TransactionService;

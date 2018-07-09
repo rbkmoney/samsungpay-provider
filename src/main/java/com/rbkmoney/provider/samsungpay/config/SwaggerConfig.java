@@ -1,6 +1,6 @@
 package com.rbkmoney.provider.samsungpay.config;
 
-import com.rbkmoney.provider.samsungpay.iface.session.DumbRequestTransactionController;
+import com.rbkmoney.provider.samsungpay.iface.transaction.DumbRequestTransactionController;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
