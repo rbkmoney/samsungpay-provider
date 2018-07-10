@@ -1,7 +1,7 @@
 package com.rbkmoney.provider.samsungpay.iface.transaction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rbkmoney.provider.samsungpay.service.TransactionService;
+import com.rbkmoney.provider.samsungpay.service.SPayService;
 import com.rbkmoney.woody.api.flow.error.WErrorType;
 import com.rbkmoney.woody.api.flow.error.WRuntimeException;
 import io.swagger.annotations.Api;
@@ -29,7 +29,7 @@ public class DumbRequestTransactionController {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private TransactionService service;
+    private SPayService service;
 
     private ObjectMapper mapper = new ObjectMapper();
 

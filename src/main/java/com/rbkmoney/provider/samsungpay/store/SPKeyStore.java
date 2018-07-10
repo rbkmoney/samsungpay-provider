@@ -41,7 +41,6 @@ public class SPKeyStore {
         pemKey = pemKey.replace("-----BEGIN PRIVATE KEY-----\n", "");
         pemKey = pemKey.replace("-----END PRIVATE KEY-----", "");
         byte[] encoded = Base64.getDecoder().decode(pemKey);
-        KeyFactory kf = KeyFactory.getInstance("RSA");
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encoded);
         return keySpec;
     }

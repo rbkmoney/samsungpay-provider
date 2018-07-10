@@ -44,7 +44,7 @@ public class TransactionRunnerTest {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
-            headers.add("X-Request-Id", System.currentTimeMillis()+"");
+            //headers.add("X-Request-Id", System.currentTimeMillis()+"");
 
             HttpEntity<String> request = new HttpEntity<>(IOUtils.toString(resource.getInputStream()), headers);
 

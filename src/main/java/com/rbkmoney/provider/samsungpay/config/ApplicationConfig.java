@@ -2,8 +2,8 @@ package com.rbkmoney.provider.samsungpay.config;
 
 import com.rbkmoney.damsel.payment_tool_provider.PaymentToolProviderSrv;
 import com.rbkmoney.provider.samsungpay.iface.decrypt.ProviderHandler;
-import com.rbkmoney.provider.samsungpay.service.TransactionClient;
-import com.rbkmoney.provider.samsungpay.service.TransactionService;
+import com.rbkmoney.provider.samsungpay.service.SPayClient;
+import com.rbkmoney.provider.samsungpay.service.SPayService;
 import com.rbkmoney.provider.samsungpay.store.SPKeyStore;
 import com.rbkmoney.woody.api.flow.WFlow;
 import org.apache.catalina.connector.Connector;
@@ -28,13 +28,13 @@ import java.io.IOException;
 @Configuration
 public class ApplicationConfig {
     @Bean
-    public TransactionClient transactionClient(
+    public SPayClient transactionClient(
             @Value("${samsung.trans_url_template}") String transactionURLTemplate,
             @Value("${samsung.cred_url_template}") String credentialsURLTemplate,
             @Value("${samsung.conn_timeout_ms}") int connTimeoutMs,
             @Value("${samsung.read_timeout_ms}") int readTimeoutMs,
             @Value("${samsung.write_timeout_ms}") int writeTimeoutMs) {
-        return new TransactionClient(transactionURLTemplate, credentialsURLTemplate, connTimeoutMs, readTimeoutMs, writeTimeoutMs);
+        return new SPayClient(transactionURLTemplate, credentialsURLTemplate, connTimeoutMs, readTimeoutMs, writeTimeoutMs);
     }
 
     @Bean
@@ -43,13 +43,13 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public TransactionService transactionService(TransactionClient transactionClient, SPKeyStore spKeyStore) {
-        return new TransactionService(transactionClient, spKeyStore);
+    public SPayService transactionService(SPayClient SPayClient, SPKeyStore spKeyStore) {
+        return new SPayService(SPayClient, spKeyStore);
     }
 
     @Bean
-    public PaymentToolProviderSrv.Iface providerHandler() {
-        return new ProviderHandler();
+    public PaymentToolProviderSrv.Iface providerHandler(SPayService sPayService) {
+        return new ProviderHandler(sPayService);
     }
 
 

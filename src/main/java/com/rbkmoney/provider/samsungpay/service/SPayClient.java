@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by vpankrashkin on 26.06.18.
  */
-public class TransactionClient {
+public class SPayClient {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final int connTimeoutMs;
@@ -28,7 +28,7 @@ public class TransactionClient {
     private final UriTemplate transactionTemplate;
     private final UriTemplate credentialsTemplate;
 
-    public TransactionClient(String transactionURLTemplate, String credentialsURLTemplate, int connTimeoutMs, int readTimeoutMs, int writeTimeoutMs) {
+    public SPayClient(String transactionURLTemplate, String credentialsURLTemplate, int connTimeoutMs, int readTimeoutMs, int writeTimeoutMs) {
         this.connTimeoutMs = connTimeoutMs;
         this.readTimeoutMs = readTimeoutMs;
         this.writeTimeoutMs = writeTimeoutMs;
@@ -38,7 +38,7 @@ public class TransactionClient {
     }
 
     public String requestTransaction(String body) throws SPException {
-
+        log.info("Create transaction with: {}", body);
         try {
             OkHttpClient client = prepareClient();
             log.debug("Http client prepared");
@@ -47,7 +47,9 @@ public class TransactionClient {
             if (!response.isSuccessful()) {
                 log.warn("Unsuccessful call result");
             }
-            return response.body().string();
+            String result = response.body().string();
+            log.info("Create transaction result: {}", result);
+            return result;
         } catch (IOException e) {
             WErrorDefinition errDef = errorMapper.mapToDef(e, TraceContext.getCurrentTraceData().getActiveSpan());
             if (errDef != null) {
@@ -58,7 +60,8 @@ public class TransactionClient {
         }
     }
 
-    public String requestCredentials(String serviceId, String refId) throws SPException {
+    public String requestCredentials(String serviceId, String refId) throws Exception {
+        log.info("Get credentials for srv:{}, ref:{}", serviceId, refId);
         try {
             OkHttpClient client = prepareClient();
             log.debug("Http client prepared");
@@ -70,7 +73,9 @@ public class TransactionClient {
             if (!response.isSuccessful()) {
                 throw new SPException("Unsuccessful call result", response.body().string());
             }
-            return response.body().string();
+            String result = response.body().string();
+            log.info("Credentials result: {}", result);
+            return result;
         } catch (IOException e) {
             WErrorDefinition errDef = errorMapper.mapToDef(e, TraceContext.getCurrentTraceData().getActiveSpan());
             if (errDef != null) {
