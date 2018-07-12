@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.util.AbstractMap;
+import java.util.Map;
 
 /**
  * Created by vpankrashkin on 03.07.18.
@@ -34,7 +36,7 @@ public class SPayService {
         return respBody;
     }
 
-    public PData3DS getCredentials(String serviceId, String refId) throws Exception {
+    public Map.Entry<CredentialsResponse, PData3DS> getCredentials(String serviceId, String refId) throws Exception {
         log.info("Get key for service: {}", serviceId);
         PKCS8EncodedKeySpec keySpec = keyStore.getKey(serviceId);
         if (keySpec == null) {
@@ -51,7 +53,7 @@ public class SPayService {
         //optionally, add response validation
         String credentials = Decryptor.getDecryptedData(credResp.data3DS.data, keySpec);
         log.info("Payment credentials decrypted");
-        return mapper.readValue(credentials, PData3DS.class);
+        return new AbstractMap.SimpleEntry<>(credResp, mapper.readValue(credentials, PData3DS.class));
 
     }
 

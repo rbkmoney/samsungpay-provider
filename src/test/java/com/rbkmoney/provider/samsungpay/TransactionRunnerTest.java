@@ -1,7 +1,6 @@
 package com.rbkmoney.provider.samsungpay;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,7 +11,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 
 import static org.junit.Assert.assertEquals;
 
@@ -35,20 +34,19 @@ public class TransactionRunnerTest {
     private org.springframework.core.io.Resource resource;
 
 
-
     RestTemplate restTemplate = new RestTemplate();
 
     @Test
-    public void testRequestTransaction() throws InterruptedException, URISyntaxException, IOException {
+    public void testRequestTransaction() throws IOException {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON_UTF8);
 
             //headers.add("X-Request-Id", System.currentTimeMillis()+"");
 
-            HttpEntity<String> request = new HttpEntity<>(IOUtils.toString(resource.getInputStream()), headers);
+            HttpEntity<String> request = new HttpEntity<>(IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8), headers);
 
-            ResponseEntity<String> response = restTemplate.postForEntity(transactionUrl, request , String.class);
+            ResponseEntity<String> response = restTemplate.postForEntity(transactionUrl, request, String.class);
             assertEquals(HttpStatus.OK, response.getStatusCode());
         } catch (HttpClientErrorException e) {
             System.out.println(e.getResponseBodyAsString());
