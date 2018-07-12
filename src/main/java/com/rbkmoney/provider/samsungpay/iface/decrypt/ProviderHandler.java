@@ -5,7 +5,6 @@ import com.rbkmoney.damsel.payment_tool_provider.*;
 import com.rbkmoney.provider.samsungpay.domain.CardBrand;
 import com.rbkmoney.provider.samsungpay.domain.CredentialsResponse;
 import com.rbkmoney.provider.samsungpay.domain.PData3DS;
-import com.rbkmoney.provider.samsungpay.service.SPException;
 import com.rbkmoney.provider.samsungpay.service.SPayService;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -40,7 +39,7 @@ public class ProviderHandler implements PaymentToolProviderSrv.Iface {
 
             CredentialsResponse credentialsResponse = responseWithPData3DS.getKey();
             PData3DS pData = responseWithPData3DS.getValue();
-            // log.info("Payment data decrypted: {}", pData); //?
+            log.info("Payment data decrypted: {}", pData);
 
             UnwrappedPaymentTool result = new UnwrappedPaymentTool();
             SamsungPayDetails samsungPayDetails = new SamsungPayDetails();
