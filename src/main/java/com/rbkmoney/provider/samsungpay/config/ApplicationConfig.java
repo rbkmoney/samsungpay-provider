@@ -27,24 +27,24 @@ public class ApplicationConfig {
 
     public static final String HEALTH = "/actuator/health";
 
-    @Value("${server.rest_port}")
+    @Value("${server.rest.port}")
     private int restPort;
 
-    @Value("/${server.rest_path_prefix}/")
-    private String httpPathPrefix;
+    @Value("/${server.rest.endpoint}/")
+    private String restEndpoint;
 
     @Bean
     public SPayClient transactionClient(
-            @Value("${samsung.trans_url_template}") String transactionURLTemplate,
-            @Value("${samsung.cred_url_template}") String credentialsURLTemplate,
-            @Value("${samsung.conn_timeout_ms}") int connTimeoutMs,
-            @Value("${samsung.read_timeout_ms}") int readTimeoutMs,
-            @Value("${samsung.write_timeout_ms}") int writeTimeoutMs) {
+            @Value("${samsung.url.template.transactions}") String transactionURLTemplate,
+            @Value("${samsung.url.template.credentials}") String credentialsURLTemplate,
+            @Value("${samsung.timeout.connect}") int connTimeoutMs,
+            @Value("${samsung.timeout.read}") int readTimeoutMs,
+            @Value("${samsung.timeout.write}") int writeTimeoutMs) {
         return new SPayClient(transactionURLTemplate, credentialsURLTemplate, connTimeoutMs, readTimeoutMs, writeTimeoutMs);
     }
 
     @Bean
-    public SPKeyStore keyStore(@Value("${keys_path}") String keysPath) {
+    public SPKeyStore keyStore(@Value("${keys.path}") String keysPath) {
         return new SPKeyStore(keysPath);
     }
 
@@ -76,7 +76,7 @@ public class ApplicationConfig {
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain filterChain) throws ServletException, IOException {
                 if (request.getLocalPort() == restPort) {
-                    if (!(request.getServletPath().startsWith(httpPathPrefix) || request.getServletPath().startsWith(HEALTH))) {
+                    if (!(request.getServletPath().startsWith(restEndpoint) || request.getServletPath().startsWith(HEALTH))) {
                         response.sendError(404, "Unknown address");
                         return;
                     }
@@ -102,7 +102,7 @@ public class ApplicationConfig {
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain filterChain) throws ServletException, IOException {
                 if (request.getLocalPort() == restPort) {
-                    if (request.getServletPath().startsWith(httpPathPrefix)) {
+                    if (request.getServletPath().startsWith(restEndpoint)) {
                         wFlow.createServiceFork(() -> {
                             try {
                                 filterChain.doFilter(request, response);
@@ -125,7 +125,7 @@ public class ApplicationConfig {
         filterRegistrationBean.setFilter(filter);
         filterRegistrationBean.setOrder(-50);
         filterRegistrationBean.setName("woodyFilter");
-        filterRegistrationBean.addUrlPatterns(httpPathPrefix + "*");
+        filterRegistrationBean.addUrlPatterns(restEndpoint + "*");
         return filterRegistrationBean;
     }
 }

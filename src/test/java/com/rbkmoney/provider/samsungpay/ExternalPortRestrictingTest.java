@@ -18,24 +18,26 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"server.rest_port=65434"}
+        properties = {"server.rest.port=65434"}
 )
 public class ExternalPortRestrictingTest {
 
     private static final String FAKE_REST_PATH = "/you-not-found";
-    private static final String MAPPED_REST_ENDPATH = "transaction";
+    private static final String MAPPED_REST_ENDPATH = "/transaction";
 
-    @Value("http://localhost:${server.rest_port}")
-    private String restUrl;
+    @Value("${server.rest.port}")
+    private int restPort;
 
-    @Value("/${server.rest_path_prefix}/")
-    private String restPath;
+    @Value("/${server.rest.endpoint}")
+    private String restEndpoint;
 
     @Test
     public void test() throws IOException {
-        HttpGet httpGetTransaction = new HttpGet(restUrl + restPath + MAPPED_REST_ENDPATH);
-        HttpGet httpGetHealth = new HttpGet(restUrl + HEALTH);
-        HttpGet httpGetWrongAddress = new HttpGet(restUrl + FAKE_REST_PATH);
+        String baseUrl = "http://localhost:" + restPort;
+        String restUrl = baseUrl + restEndpoint;
+        HttpGet httpGetTransaction = new HttpGet(restUrl + MAPPED_REST_ENDPATH);
+        HttpGet httpGetHealth = new HttpGet(baseUrl + HEALTH);
+        HttpGet httpGetWrongAddress = new HttpGet(baseUrl + FAKE_REST_PATH);
 
         assertEquals(HttpStatus.SC_METHOD_NOT_ALLOWED, getHttpClient().execute(httpGetTransaction).getStatusLine().getStatusCode());
         assertEquals(HttpStatus.SC_OK, getHttpClient().execute(httpGetHealth).getStatusLine().getStatusCode());
