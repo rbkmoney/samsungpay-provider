@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
 
+import static com.rbkmoney.provider.samsungpay.config.ApplicationConfig.HEALTH;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
@@ -21,17 +22,20 @@ import static org.junit.Assert.assertEquals;
 )
 public class PortResolverTest {
 
+    private static final String FAKE_REST_ENDPOINT = "/you-not-found";
+    private static final String EXAMPLE_MAPPED_URL_PATH = "transaction";
+
     @Value("http://localhost:${server.rest_port}")
     private String restUrl;
 
-    @Value("/${server.rest_path_prefix}")
-    private String restPathPrefix;
+    @Value("/${server.rest_path_prefix}/")
+    private String restEndpoint;
 
     @Test
     public void portValidTest() throws IOException {
-        HttpGet httpGetTransaction = new HttpGet(restUrl + restPathPrefix + "/transaction");
-        HttpGet httpGetHealth = new HttpGet(restUrl + "/actuator/health");
-        HttpGet httpGetWrongAddress = new HttpGet(restUrl + "/wrong/address");
+        HttpGet httpGetTransaction = new HttpGet(restUrl + restEndpoint + EXAMPLE_MAPPED_URL_PATH);
+        HttpGet httpGetHealth = new HttpGet(restUrl + HEALTH);
+        HttpGet httpGetWrongAddress = new HttpGet(restUrl + FAKE_REST_ENDPOINT);
 
         assertEquals(HttpStatus.SC_METHOD_NOT_ALLOWED, getHttpClient().execute(httpGetTransaction).getStatusLine().getStatusCode());
         assertEquals(HttpStatus.SC_OK, getHttpClient().execute(httpGetHealth).getStatusLine().getStatusCode());
