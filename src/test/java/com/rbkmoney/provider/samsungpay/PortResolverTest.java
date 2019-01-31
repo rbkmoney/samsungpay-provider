@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"server.rest_port=65432"}
+        properties = {"server.rest_port=65434"}
 )
 public class PortResolverTest {
 
