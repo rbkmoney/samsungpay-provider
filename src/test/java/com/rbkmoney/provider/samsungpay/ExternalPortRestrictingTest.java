@@ -20,22 +20,22 @@ import static org.junit.Assert.assertEquals;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {"server.rest_port=65434"}
 )
-public class PortResolverTest {
+public class ExternalPortRestrictingTest {
 
-    private static final String FAKE_REST_ENDPOINT = "/you-not-found";
-    private static final String EXAMPLE_MAPPED_URL_PATH = "transaction";
+    private static final String FAKE_REST_PATH = "/you-not-found";
+    private static final String MAPPED_REST_ENDPATH = "transaction";
 
     @Value("http://localhost:${server.rest_port}")
     private String restUrl;
 
     @Value("/${server.rest_path_prefix}/")
-    private String restEndpoint;
+    private String restPath;
 
     @Test
-    public void portValidTest() throws IOException {
-        HttpGet httpGetTransaction = new HttpGet(restUrl + restEndpoint + EXAMPLE_MAPPED_URL_PATH);
+    public void test() throws IOException {
+        HttpGet httpGetTransaction = new HttpGet(restUrl + restPath + MAPPED_REST_ENDPATH);
         HttpGet httpGetHealth = new HttpGet(restUrl + HEALTH);
-        HttpGet httpGetWrongAddress = new HttpGet(restUrl + FAKE_REST_ENDPOINT);
+        HttpGet httpGetWrongAddress = new HttpGet(restUrl + FAKE_REST_PATH);
 
         assertEquals(HttpStatus.SC_METHOD_NOT_ALLOWED, getHttpClient().execute(httpGetTransaction).getStatusLine().getStatusCode());
         assertEquals(HttpStatus.SC_OK, getHttpClient().execute(httpGetHealth).getStatusLine().getStatusCode());
