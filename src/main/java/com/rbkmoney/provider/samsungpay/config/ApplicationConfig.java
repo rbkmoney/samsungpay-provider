@@ -75,17 +75,17 @@ public class ApplicationConfig {
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain filterChain) throws ServletException, IOException {
-                if (request.getLocalPort() == restPort) {
-                    if (!(request.getServletPath().startsWith(restEndpoint) || request.getServletPath().startsWith(HEALTH))) {
-                        response.sendError(404, "Unknown address");
-                        return;
-                    }
+                String servletPath = request.getServletPath();
+                if ((request.getLocalPort() == restPort)
+                        && !(servletPath.startsWith(restEndpoint) || servletPath.startsWith(HEALTH))) {
+                    response.sendError(404, "Unknown address");
+                    return;
                 }
                 filterChain.doFilter(request, response);
             }
         };
 
-        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(filter);
         filterRegistrationBean.setOrder(-100);
         filterRegistrationBean.setName("httpPortFilter");
@@ -101,17 +101,16 @@ public class ApplicationConfig {
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                             FilterChain filterChain) throws ServletException, IOException {
-                if (request.getLocalPort() == restPort) {
-                    if (request.getServletPath().startsWith(restEndpoint)) {
-                        wFlow.createServiceFork(() -> {
-                            try {
-                                filterChain.doFilter(request, response);
-                            } catch (IOException | ServletException e) {
-                                sneakyThrow(e);
-                            }
-                        }).run();
-                        return;
-                    }
+                if ((request.getLocalPort() == restPort)
+                        && request.getServletPath().startsWith(restEndpoint)) {
+                    wFlow.createServiceFork(() -> {
+                        try {
+                            filterChain.doFilter(request, response);
+                        } catch (IOException | ServletException e) {
+                            sneakyThrow(e);
+                        }
+                    }).run();
+                    return;
                 }
                 filterChain.doFilter(request, response);
             }
@@ -121,7 +120,7 @@ public class ApplicationConfig {
             }
         };
 
-        FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
+        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
         filterRegistrationBean.setFilter(filter);
         filterRegistrationBean.setOrder(-50);
         filterRegistrationBean.setName("woodyFilter");
