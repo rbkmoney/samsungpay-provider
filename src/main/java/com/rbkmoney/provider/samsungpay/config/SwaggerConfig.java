@@ -10,6 +10,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.HashSet;
+import java.util.Set;
 
 @Configuration
 @EnableSwagger2
@@ -22,7 +23,9 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage(DumbRequestTransactionController.class.getPackage().getName()))
                 .paths(PathSelectors.any())
                 .build();
-        docket.produces(new HashSet(){{add("application/json");}});
+        Set<String> producesSet = new HashSet<>();
+        producesSet.add("application/json");
+        docket.produces(producesSet);
         docket.forCodeGeneration(true);
         return docket;
     }
