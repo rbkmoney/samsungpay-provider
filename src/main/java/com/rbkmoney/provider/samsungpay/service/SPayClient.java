@@ -11,7 +11,6 @@ import org.springframework.web.util.UriTemplate;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -62,9 +61,7 @@ public class SPayClient {
         try {
             OkHttpClient client = prepareClient();
             log.debug("Http client prepared");
-            Map<String, Object> uriVar = new HashMap<>();
-            uriVar.put("id", refId);
-            uriVar.put("serviceId", serviceId);
+            Map<String, String> uriVar = Map.of("id", refId, "serviceId", serviceId);
             Request request = prepareGetRequest(credentialsTemplate.expand(uriVar).toURL());
             Response response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
